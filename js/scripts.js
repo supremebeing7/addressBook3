@@ -1,17 +1,53 @@
 var Contact = {
   fullName: function() {
     return this.firstName + " " + this.lastName;
+  },
+  initialize: function(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.addresses = [];
+    this.phoneNumbers = [];
+  },
+  all: [],
+  create: function(firstName, lastName) {
+    var newContact = Object.create(Contact);
+    newContact.initialize(firstName, lastName);
+    Contact.all.push(newContact);
+    return newContact;
+  },
+  createAddress: function(street, city, state, zip) {
+    var newAddress = Address.create(street, city, state, zip);
+    this.addresses.push(newAddress);
+    return newAddress;
+  },
+  createPhoneNumber: function(number) {
+    var newPhoneNumber = PhoneNumber.create(number);
+    this.phoneNumbers.push(newPhoneNumber);
+    return newPhoneNumber;
   }
 };
 
 
 var Address = {
+  initialize: function(street, city, state, zip) {
+    this.street = street;
+    this.city = city;
+    this.state = state;
+    this.zipCode = zip;
+  },
+  all: [],
+  create: function(street, city, state, zip) {
+    var newAddress = Object.create(Address);
+    newAddress.initialize(street, city, state, zip);
+    Address.all.push(newAddress);
+    return newAddress;
+  },
   fullAddress: function() {
     return this.street + ", " + this.city + ", " + this.state + " " + this.zipCode;
   },
   valid: function() {
     var nonNumberRE = /\D/;
-    var numberRE = /\d/
+    var numberRE = /\d/;
     var validZip = !nonNumberRE.test(this.zipCode) && this.zipCode.length === 5;
     var validStreet = this.street.length > 0;
     var validCity = this.city.length > 0 && !numberRE.test(this.city);
@@ -22,6 +58,16 @@ var Address = {
 };
 
 var PhoneNumber = {
+  all: [],
+  create: function(number) {
+    var newPhoneNumber = Object.create(PhoneNumber);
+    newPhoneNumber.initialize(number);
+    PhoneNumber.all.push(newPhoneNumber);
+    return newPhoneNumber;
+  },
+  initialize: function(number) {
+    this.number = number;
+  },
   formattedNumber: function() {
     return "(" + this.number.slice(0,3) + ") " + this.number.slice(3,6) + "-" + this.number.slice(6);
   },
@@ -69,45 +115,35 @@ $(document).ready(function() {
     var inputtedFirstName = $("input#new-first-name").val();
     var inputtedLastName = $("input#new-last-name").val();
 
-    var newContact = Object.create(Contact);
-    newContact.firstName = inputtedFirstName;
-    newContact.lastName = inputtedLastName;
-
-    newContact.addresses = [];
-    newContact.phoneNumbers = [];
-
+    var newContact = Contact.create(inputtedFirstName, inputtedLastName);
+   
     $(".new-address").each(function() {
       var inputtedStreet = $(this).find("input.new-street").val();
       var inputtedCity = $(this).find("input.new-city").val();
       var inputtedState = $(this).find("input.new-state").val();
       var inputtedZipCode = $(this).find("input.new-zip-code").val();
 
-      var newAddress = Object.create(Address);
-      newAddress.street = inputtedStreet;
-      newAddress.city = inputtedCity;
-      newAddress.state = inputtedState;
-      newAddress.zipCode = inputtedZipCode;
+      var newAddress = newContact.createAddress(inputtedStreet, inputtedCity, inputtedState, inputtedZipCode);
+      
 
       if(!newAddress.valid()){
         invalidInputCounter ++;
         alert(newAddress.fullAddress() + " is not a valid address!  Please correct and re-enter");
       }
 
-      newContact.addresses.push(newAddress);
     });
 
     $(".new-phone-number").each(function() {
       var inputtedPhoneNumber = $(this).find("input.new-number").val();
-      var newPhoneNumber = Object.create(PhoneNumber);
-      newPhoneNumber.number = inputtedPhoneNumber;
+      var newPhoneNumber = newContact.createPhoneNumber(inputtedPhoneNumber);
+      
 
       if(!newPhoneNumber.valid()){
         invalidInputCounter ++;
         alert(newPhoneNumber.number + " is not a valid phone number! Please correct and re-enter.");
       } 
 
-      newContact.phoneNumbers.push(newPhoneNumber);
-
+ 
     })
 
     if(invalidInputCounter === 0) {
