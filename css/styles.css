@@ -1,0 +1,16 @@
+#update-contact {
+  display: none;
+}
+
+#show-contact {
+  display: none;
+}
+
+.contact {
+  cursor: pointer;
+  color: #08c;
+}
+
+.contact:hover {
+  text-decoration: underline;
+}
