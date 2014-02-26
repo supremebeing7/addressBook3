@@ -1,16 +1,3 @@
-describe("Address", function() {
-  describe("fullAddress", function() {
-    it("returns the full address with nice formatting", function() {
-      var testAddress = Object.create(Address);
-      testAddress.street = "123 4th Ave";
-      testAddress.city = "Portland";
-      testAddress.state = "Oregon";
-      testAddress.zipCode = "97217";
-      testAddress.fullAddress().should.equal("123 4th Ave, Portland, Oregon 97217");
-    });
-  });
-});
-
 describe("PhoneNumber", function() {
   describe("valid", function() {
     it("returns true if the phone number is 10 characters long", function() {
@@ -145,6 +132,16 @@ describe("Address", function() {
       testAddress.zipCode.should.equal("97217");
     });
   });
+  describe("fullAddress", function() {
+    it("returns the full address with nice formatting", function() {
+      var testAddress = Object.create(Address);
+      testAddress.street = "123 4th Ave";
+      testAddress.city = "Portland";
+      testAddress.state = "Oregon";
+      testAddress.zipCode = "97217";
+      testAddress.fullAddress().should.equal("123 4th Ave, Portland, Oregon 97217");
+    });
+  });
 });  
 
 describe("Contact", function() {
@@ -166,20 +163,20 @@ describe("Contact", function() {
   describe("createAddress", function() {
     it("creates an address object", function() {
       var testContact = Contact.create();
-      var testAddress = testContact.createAddress();
+      var testAddress = testContact.createAddress("a","a","a","12345");
       Address.isPrototypeOf(testAddress).should.equal(true);
     });
 
     it("adds the address to the addresses property of the contact", function() {
       var testContact = Contact.create();
-      var testAddress = testContact.createAddress();
+      var testAddress = testContact.createAddress("a","a","a","12345");
       testContact.addresses.should.eql([testAddress]);
     });
   });
   describe("createPhoneNumber", function() {
     it("creates a phone number object", function() {
       var testContact = Contact.create();
-      var testPhoneNumber = testContact.createPhoneNumber();
+      var testPhoneNumber = testContact.createPhoneNumber("1234567890");
       PhoneNumber.isPrototypeOf(testPhoneNumber).should.equal(true);
     });
   });

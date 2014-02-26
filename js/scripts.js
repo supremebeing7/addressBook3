@@ -17,13 +17,24 @@ var Contact = {
   },
   createAddress: function(street, city, state, zip) {
     var newAddress = Address.create(street, city, state, zip);
-    this.addresses.push(newAddress);
-    return newAddress;
+    if(newAddress.valid()) {
+      this.addresses.push(newAddress);
+      return newAddress;
+    } else {
+      alert(newAddress.fullAddress() + " is not a valid address!  Please correct and re-enter");
+      return false;
+    }
   },
   createPhoneNumber: function(number) {
     var newPhoneNumber = PhoneNumber.create(number);
-    this.phoneNumbers.push(newPhoneNumber);
-    return newPhoneNumber;
+    if(newPhoneNumber.valid()) {
+      this.phoneNumbers.push(newPhoneNumber);
+      return newPhoneNumber;
+    } else {
+      alert(newPhoneNumber.number + " is not a valid phone number! Please correct and re-enter.");
+      return false;
+    }
+    
   }
 };
 
@@ -124,27 +135,20 @@ $(document).ready(function() {
       var inputtedZipCode = $(this).find("input.new-zip-code").val();
 
       var newAddress = newContact.createAddress(inputtedStreet, inputtedCity, inputtedState, inputtedZipCode);
-      
-
-      if(!newAddress.valid()){
+        
+      if (!Address.isPrototypeOf(newAddress)) {
         invalidInputCounter ++;
-        alert(newAddress.fullAddress() + " is not a valid address!  Please correct and re-enter");
-      }
-
+      };
     });
 
     $(".new-phone-number").each(function() {
       var inputtedPhoneNumber = $(this).find("input.new-number").val();
       var newPhoneNumber = newContact.createPhoneNumber(inputtedPhoneNumber);
       
-
-      if(!newPhoneNumber.valid()){
-        invalidInputCounter ++;
-        alert(newPhoneNumber.number + " is not a valid phone number! Please correct and re-enter.");
-      } 
-
- 
-    })
+      if (!PhoneNumber.isPrototypeOf(newPhoneNumber)) {
+        invalidInputCounter++;
+      };
+    });
 
     if(invalidInputCounter === 0) {
       $("ul#contacts").append("<li><span class='contact'>" + newContact.fullName() + "</span></li>");      
